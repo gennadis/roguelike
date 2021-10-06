@@ -1,4 +1,6 @@
 import tcod
+from actions import EscapeAction, MovementAction
+from input_handlers import EventHandler
 
 def main() -> None:
 
@@ -15,6 +17,10 @@ def main() -> None:
         'dejavu10x10_gs_tc.png', 32, 8, tcod.tileset.CHARMAP_TCOD
         )
     
+    # create an instance of EventHandler class
+    # to receive events and  process them
+    event_handler = EventHandler()
+
     # create the screen with such parameters
     with tcod.context.new_terminal(
         screen_width, 
@@ -36,10 +42,26 @@ def main() -> None:
             # this updates the screen
             context.present(root_console)
 
-            for event in tcod.event.wait():
-                if event.type == 'QUIT':
-                    raise SystemExit()
+            # clear console so no traces left
+            root_console.clear()
 
+            for event in tcod.event.wait():
+                # send event to proper place
+                # in this case send key press to ev_keydown method
+                action = event_handler.dispatch(event)
+
+                # if no key is pressed then skip
+                if action is None:
+                    continue
+                
+                # add movement to @ coordinates
+                if isinstance(action, MovementAction):
+                    player_x += action.dx
+                    player_y += action.dy
+                
+                # exit on Escape key press
+                elif isinstance(action, EscapeAction):
+                    raise SystemExit()
 
 
 if __name__ == '__main__':
