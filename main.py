@@ -1,16 +1,13 @@
 import tcod
-from actions import EscapeAction, MovementAction
+from engine import Engine
 from input_handlers import EventHandler
+from entity import Entity
 
 def main() -> None:
 
     # screen size settings
     screen_width = 80
     screen_height = 50
-
-    # put the @ in the very middle
-    player_x = int(screen_width / 2)
-    player_y = int(screen_height / 2)
 
     #load font file
     tileset = tcod.tileset.load_tilesheet(
@@ -20,6 +17,15 @@ def main() -> None:
     # create an instance of EventHandler class
     # to receive events and  process them
     event_handler = EventHandler()
+
+    # initialize player and new NPC
+    # and store them in set
+    player = Entity(int(screen_width / 2), int(screen_height / 2), '@', (255, 255, 255))
+    npc = Entity(int(screen_width / 2) - 5, int(screen_height / 2) - 5, 'N', (255, 255, 0))
+    entities = {player, npc}
+
+    # create the engine instance, pass vars and use engine methods
+    engine = Engine(entities=entities, event_handler=event_handler, player=player)
 
     # create the screen with such parameters
     with tcod.context.new_terminal(
@@ -37,31 +43,12 @@ def main() -> None:
         # main game loop
         while True:
             # print @ in colsole
-            root_console.print(x=player_x, y=player_y, string='@')
+            engine.render(console=root_console, context=context)
 
-            # this updates the screen
-            context.present(root_console)
+            events = tcod.event.wait()
 
-            # clear console so no traces left
-            root_console.clear()
+            engine.handle_events(events)
 
-            for event in tcod.event.wait():
-                # send event to proper place
-                # in this case send key press to ev_keydown method
-                action = event_handler.dispatch(event)
-
-                # if no key is pressed then skip
-                if action is None:
-                    continue
-                
-                # add movement to @ coordinates
-                if isinstance(action, MovementAction):
-                    player_x += action.dx
-                    player_y += action.dy
-                
-                # exit on Escape key press
-                elif isinstance(action, EscapeAction):
-                    raise SystemExit()
 
 
 if __name__ == '__main__':
