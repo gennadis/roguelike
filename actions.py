@@ -18,3 +18,7 @@ class MovementAction(Action):
 
         self.dx = dx
         self.dy = dy
+
+
+if __name__ == "__main__":
+    pass

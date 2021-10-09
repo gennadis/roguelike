@@ -35,3 +35,7 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         # return action whether it was
         # assigned to some Action subclass or not
         return action
+
+
+if __name__ == "__main__":
+    pass

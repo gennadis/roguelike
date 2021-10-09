@@ -8,5 +8,8 @@
 [x] add input handlers for movement and quit
 [x] implement Entity class
 [x] add Entity instance movement ability
-[ ] add test NPC on the board 
+[x] add test NPC on the board 
+[x] game engine module was implemented
+[x] engine module imported to main.py 
+
 
