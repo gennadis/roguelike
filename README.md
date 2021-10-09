@@ -11,4 +11,6 @@
 - [x] add test NPC on the board 
 - [x] game engine module was implemented
 - [x] engine module imported to main.py 
-
+- [x] add tile types such as floor, wall, etc.
+- [x] game map module implemented
+- [x] add test wall on game map

@@ -10,11 +10,8 @@ class GameMap:
         self.height = height
 
         # create 2D array filled with the same values
-        # fill with floor
-        self.tiles = np.full((width, height), fill_value=tile_types.floor, order="F")
-
-        # create a test wall
-        self.tiles[30:33, 22] = tile_types.wall
+        # fill with walls
+        self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
 
     def in_bounds(self, x: int, y: int) -> bool:
         """

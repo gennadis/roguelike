@@ -2,8 +2,8 @@ import tcod
 from engine import Engine
 from entity import Entity
 from input_handlers import EventHandler
-from game_map import GameMap
 from entity import Entity
+from procgen import generate_dungeon
 
 
 def main():
@@ -30,11 +30,12 @@ def main():
 
     # all entities creation
     player = Entity(player_x, player_y, "@", (255, 255, 0))
-    npc = Entity(10, 20, "NPC", (220, 90, 30))
+    npc = Entity(5, 5, "NPC", (220, 90, 30))
     entities = {player, npc}  # store all entitites in a set
 
-    # create GameMap instance with dimensions as parameters
-    game_map = GameMap(map_width, map_heigth)
+    # create GameMap instance with a dungeon
+    # with dungeon dimensions as parameters
+    game_map = generate_dungeon(map_width, map_heigth)
 
     engine = Engine(
         entities=entities, event_handler=event_handler, game_map=game_map, player=player
