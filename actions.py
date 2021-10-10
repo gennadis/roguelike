@@ -49,7 +49,3 @@ class MovementAction(Action):
             return  # Destination is blocked by some other object
 
         entity.move(self.dx, self.dy)
-
-
-if __name__ == "__main__":
-    pass

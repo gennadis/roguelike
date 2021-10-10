@@ -3,6 +3,8 @@ from __future__ import annotations
 import random
 import tcod
 
+import entity_factories
+
 from typing import Iterator, List, Tuple, TYPE_CHECKING
 
 from game_map import GameMap
@@ -49,19 +51,38 @@ class RectangularRoom:
         )
 
 
+def place_entities(
+    room: RectangularRoom,
+    dungeon: GameMap,
+    maximum_monsters: int,
+) -> None:
+    number_of_monsters = random.randint(0, maximum_monsters)
+    for i in range(number_of_monsters):
+        x = random.randint(room.x1 + 1, room.x2 - 1)  # select random x coord
+        y = random.randint(room.y1 + 1, room.y2 - 1)  # select random y coord
+
+        # check if there's no other entities in given tile! no stacking needed in game
+        if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
+            if random.random() < 0.8:
+                entity_factories.orc.spawn(dungeon, x, y)
+            else:
+                entity_factories.troll.spawn(dungeon, x, y)
+
+
 def generate_dungeon(
     max_rooms: int,  # max numbers of rooms
     room_min_size: int,  # room min size
     room_max_size: int,  # room max size
     map_width: int,  # map dimensions
     map_height: int,  # map dimensions
+    max_monsters_per_room: int,
     player: Entity,  # where to place Player's character
 ) -> GameMap:
     """
-    Generate a new map with a dungeons!!!
+    Generate a new map with a dungeons
     """
     # create the initial GameMap
-    dungeon = GameMap(map_width, map_height)
+    dungeon = GameMap(map_width, map_height, entities=[player])
 
     # store a list of all rooms
     rooms: List[RectangularRoom] = []
@@ -87,6 +108,9 @@ def generate_dungeon(
 
         # dig out this rooms inner area
         dungeon.tiles[new_room.inner] = tile_types.floor
+
+        # place created entities int the room
+        place_entities(new_room, dungeon, max_monsters_per_room)
 
         if len(rooms) == 0:
             # this is the first room,

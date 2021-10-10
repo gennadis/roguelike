@@ -1,4 +1,6 @@
+import copy
 import tcod
+import entity_factories
 from engine import Engine
 from entity import Entity
 from input_handlers import EventHandler
@@ -20,6 +22,9 @@ def main() -> None:
     room_min_size = 6
     max_rooms = 30
 
+    # monsters number in rooms
+    max_monsters_per_room = 2
+
     # load font tileset from file
     tileset = tcod.tileset.load_tilesheet(
         "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
@@ -29,14 +34,8 @@ def main() -> None:
     # that will receive events and process them
     event_handler = EventHandler()
 
-    # main character's start coordinates
-    player_x = int(screen_width / 2)
-    player_y = int(screen_height / 2)
-
     # all entities creation
-    player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255, 255, 255))
-    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), "N", (255, 255, 0))
-    entities = {npc, player}
+    player = copy.deepcopy(entity_factories.player)
 
     # create GameMap instance with a dungeons
     # with dungeons dimensions as parameters
@@ -46,12 +45,11 @@ def main() -> None:
         room_max_size=room_max_size,
         map_width=map_width,
         map_height=map_height,
+        max_monsters_per_room=max_monsters_per_room,
         player=player,
     )
 
-    engine = Engine(
-        entities=entities, event_handler=event_handler, game_map=game_map, player=player
-    )
+    engine = Engine(event_handler=event_handler, game_map=game_map, player=player)
 
     # create the main game window with parameters:
     # screen dimensions, tileset, title and vsync
@@ -59,7 +57,7 @@ def main() -> None:
         screen_width,
         screen_height,
         tileset=tileset,
-        title="Yet Another Roguelike Tutorial",
+        title="YARG: Yet Another Roguelike Game",
         vsync=True,
     ) as context:
 
