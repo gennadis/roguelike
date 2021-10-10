@@ -19,13 +19,12 @@ class Engine:
         game_map: GameMap,
         player: Entity,
     ):
-        self.entiites = entities
+        self.entities = entities
         self.event_handler = event_handler
         self.game_map = game_map
         self.player = player
 
     def handle_events(self, events: Iterable[Any]) -> None:
-
         # pass the events so the engine
         # could iterate through them
         for event in events:
@@ -47,7 +46,7 @@ class Engine:
 
         # iterate through all entities
         # and draw ther on the game screen
-        for entity in self.entiites:
+        for entity in self.entities:
             console.print(entity.x, entity.y, entity.char, fg=entity.color)
 
         # update the game screen
