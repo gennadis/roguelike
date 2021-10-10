@@ -34,9 +34,9 @@ def main() -> None:
     player_y = int(screen_height / 2)
 
     # all entities creation
-    player = Entity(player_x, player_y, "@", (255, 255, 0))
-    npc = Entity(5, 5, "N", (220, 90, 30))
-    entities = {npc, player}  # store all entitites in a set
+    player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255, 255, 255))
+    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), "N", (255, 255, 0))
+    entities = {npc, player}
 
     # create GameMap instance with a dungeons
     # with dungeons dimensions as parameters
@@ -70,7 +70,6 @@ def main() -> None:
 
         # GAME LOOP
         while True:
-
             engine.render(console=root_console, context=context)
 
             events = tcod.event.wait()
