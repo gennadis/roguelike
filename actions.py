@@ -26,10 +26,7 @@ class EscapeAction(Action):
         raise SystemExit()
 
 
-# players movement action class
-# is Action subclass
-class MovementAction(Action):
-    # dx & dy are directions in which player is moveing
+class ActionWithDirection(Action):
     def __init__(self, dx: int, dy: int):
         super().__init__()
 
@@ -37,15 +34,45 @@ class MovementAction(Action):
         self.dy = dy
 
     def perform(self, engine: Engine, entity: Entity) -> None:
+        raise NotImplementedError()
+
+
+# inherit from ActionWithDirection
+class MeleeAction(ActionWithDirection):
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        dest_x = entity.x + self.dx
+        dest_y = entity.y + self.dy
+        target = engine.game_map.get_blocking_entity_at_location(dest_x, dest_y)
+        if not target:
+            return  # No entity to attack.
+
+        print(f"You kick the {target.name}, much to its annoyance!")
+
+
+# players movement action class
+# is Action subclass
+class MovementAction(ActionWithDirection):
+    def perform(self, engine: Engine, entity: Entity) -> None:
         dest_x = entity.x + self.dx
         dest_y = entity.y + self.dy
 
-        # check if tile moving is in bounds of map
         if not engine.game_map.in_bounds(dest_x, dest_y):
-            return  # Destination is out of bounds of MAP
-
-        # check if tile moveing is walkable
+            return  # Destination is out of bounds.
         if not engine.game_map.tiles["walkable"][dest_x, dest_y]:
-            return  # Destination is blocked by some other object
+            return  # Destination is blocked by a tile.
+        if engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
+            return  # Destination is blocked by an entity.
 
         entity.move(self.dx, self.dy)
+
+
+class BumpAction(ActionWithDirection):
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        dest_x = entity.x + self.dx
+        dest_y = entity.y + self.dy
+
+        if engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
+            return MeleeAction(self.dx, self.dy).perform(engine, entity)
+
+        else:
+            return MovementAction(self.dx, self.dy).perform(engine, entity)

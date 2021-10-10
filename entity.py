@@ -30,7 +30,7 @@ class Entity:
         self.char = char
         self.color = color
         self.name = name
-        self.blocks_movement = blocks_movement  # is movable or not
+        self.blocks_movement = blocks_movement  # if entity can be walked through
 
     def spawn(self: T, gamemap: GameMap, x: int, y: int) -> T:
         """Spawn a copy of this instance at the given location."""
